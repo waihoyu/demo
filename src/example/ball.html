@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>绚丽的小球</title>
+    <style>
+        body {
+            margin: 150px;
+        }
+        #canvas{
+            box-shadow: 0 0 10px #000;
+        }
+
+    </style>
+</head>
+<body>
+    <canvas id="canvas">
+
+    </canvas>
+    <script src="./js//underscore.js"></script>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 300;
+        canvas.height = 200;
+        canvas.style.background = '#000';
+        class Ball {
+            constructor(x, y, color){
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.r = 40;
+            }
+            render(){
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x,this.y,this.r,0, Math.PI * 2);
+                ctx.fillStyle=this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+        class MoveBall extends Ball{
+            constructor(x,y,color){
+                super(x,y,color);
+                this.dx = _.random(-5,5);
+                this.dy = _.random(-5,5);
+                this.dr =_.random(1,3);
+            }
+            upData(){
+                this.x += this.dx;
+                this.y += this.dy;
+                this.r -= this.dr;
+                if(this.r<0){
+                    this.r = 0;
+                }
+            }
+
+        }
+        let ballArr = [];
+        let colorArr = ['red','green','blue','yellow','pink','orange','purple'];
+
+        canvas.addEventListener('mousemove',function(e){
+            var e = e || event;
+            var ball = new MoveBall(e.offsetX,e.offsetY,colorArr[_.random(0,colorArr.length - 1 )]);
+            ballArr.push(ball);
+
+        });
+
+        setInterval(function(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for(let i =0 ;i < ballArr.length ;i++){
+                ballArr[i].render();
+                ballArr[i].upData();
+            }
+        }, 60);
+        // let ball = new Ball(50, 50, 'red');
+        // ball.render();
+    </script>
+</body>
+</html>
